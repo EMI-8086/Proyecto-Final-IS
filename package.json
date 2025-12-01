@@ -1,0 +1,23 @@
+{
+  "name": "proyecto-final-is",
+  "version": "1.0.0",
+  "description": "REST API's con Express y Typescript ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EMI-8086/Proyecto-Final-IS.git"
+  },
+  "author": "EMI-8086",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EMI-8086/Proyecto-Final-IS/issues"
+  },
+  "homepage": "https://github.com/EMI-8086/Proyecto-Final-IS#readme",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
