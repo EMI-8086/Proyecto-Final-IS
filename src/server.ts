@@ -8,7 +8,7 @@ async function connectDB(){
     try{
         await db.authenticate()//autentifica la conexión 
         db.sync()//sincroniza los modelos, crea tablas si no existen 
-        console.log(colors.bgGreen.white('Conexión exitosa a la BD '))
+        //console.log(colors.bgGreen.white('Conexión exitosa a la BD '))
     }catch(error){
         console.log(error)
         console.log(colors.bgRed.white('Hubo un errorcillo al conectar la BD'))
@@ -23,5 +23,9 @@ server.use(express.json())
 
 //filtra la accion http mediante esta linea, tambien se puede camiar la ruta
 server.use('/api/productos', router)
+
+server.get('/api', (req, res) => {
+res.json({msg: 'Desde API'})
+})
 
 export default server

@@ -39,7 +39,7 @@ export const createProduct = async (req: Request, res: Response) => {
         //const savedProduct = await product.save() 
         //console.log(req.body)//esta linea extrae el contenido del POST que envia la información
         //con POST podemos enviar datos de los productos
-        res.json({ data: product })// retornamos un objeto, el enviado a la BD
+        res.status(201).json({ data: product })// retornamos un objeto, el enviado a la BD
     } catch (error) {
         console.log(error)
     }

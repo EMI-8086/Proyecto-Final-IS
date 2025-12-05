@@ -23,7 +23,8 @@ router.post('/',
         .notEmpty().withMessage('El precio del producto no puede ir vacío')
         .custom(value => value > 0).withMessage('Precio no valido'),      
         handleInputErrors,
-        createProduct)
+    createProduct
+)
 
 router.put('/:id',
     param('id').isInt().withMessage('ID no valido'),
