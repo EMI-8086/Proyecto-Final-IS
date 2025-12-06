@@ -1,6 +1,10 @@
 import request  from "supertest";
 import server from "../../server";
 import { ExclusionConstraintError } from "sequelize";
+import { escape } from "sequelize/lib/sql-string";
+import Product from "../../models/Product.model";
+import { getProductById } from "../product";
+import e from "express";
 
 describe('POST /api/productos', ()=>{
     //errores de validación
@@ -75,4 +79,135 @@ describe('GET /api/productos', () =>{
         expect(response.body).not.toHaveProperty('errors')
 
     })
+})
+
+describe('GET /api/productos/:id', ()=> {
+    it('Should return a 404 response for a non-existent product', async () => {
+        const productId = 2000
+        const response = await request(server).get(`/api/productos/${productId}`)
+        expect(response.status).toBe(404)
+        expect(response.body).toHaveProperty('error')
+        expect(response.body.error).toBe('Producto no encontrado')
+    })
+    it('Should check a valid ID in the URL', async () => {
+        const response = await request(server).get('/api/productos/not-valid-url')
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors).toHaveLength(1)
+        expect(response.body.errors[0].msg).toBe('ID no valido')
+
+    })
+    it('GET a JSON response for a single product', async () => {
+        const response = await request(server).get('/api/productos/1')
+        expect(response.status).toBe(200)
+        expect(response.body).toHaveProperty('data')
+    })
+})
+
+describe('PUT /api/productos/:id', () => {
+    it('Should check a valid ID in the URL', async () => {
+        const response = await request(server)
+                            .put('/api/productos/not-valid-url')
+                            .send({
+                                name: "Monitor Chingon",
+                                availability: true,
+                                price: 1500
+                            })
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors).toHaveLength(1)
+        expect(response.body.errors[0].msg).toBe('ID no valido')
+
+    })
+
+    it('Should display validation error messages when updating a product', async() => {
+        const response = await request(server).put('/api/productos/1').send({})
+        
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors).toBeTruthy()
+        expect(response.body.errors).toHaveLength(5)
+
+        expect(response.status).not.toBe(200)
+        expect(response.body).not.toHaveProperty('data')
+    })
+
+    it('Should validate that the price is greater than cero', async() => {
+        const response = await request(server)
+                                .put('/api/productos/1')
+                                .send({
+                                    name: "Monitor Chingon",
+                                    availability: true,
+                                    price: 0
+                                })
+                                
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors).toBeTruthy()
+        expect(response.body.errors).toHaveLength(1) 
+        expect(response.body.errors[0].msg).toBe('Precio no valido')
+
+        expect(response.status).not.toBe(200)
+        expect(response.body).not.toHaveProperty('data')
+    })
+
+    it('Should return a 404 response for a non-existent product', async() => {
+        const productId = 2000
+        const response = await request(server)
+                                .put(`/api/productos/${productId}`)
+                                .send({
+                                    name: "Monitor Chingon",
+                                    availability: true,
+                                    price: 300
+                                })
+                                
+        expect(response.status).toBe(404)
+        expect(response.body.error).toBe('Producto no encontrado')
+
+        expect(response.status).not.toBe(200)
+        expect(response.body).not.toHaveProperty('data')
+    })
+
+    it('Should update an existing product with valid data', async() => {
+        const response = await request(server)
+                                .put('/api/productos/1')
+                                .send({
+                                    name: "Monitor Chingon",
+                                    availability: true,
+                                    price: 300
+                                })
+                                
+        expect(response.status).toBe(200)
+        expect(response.body).toHaveProperty('data')
+
+        expect(response.status).not.toBe(400)
+        expect(response.body).not.toHaveProperty('errors')
+    })
+})
+
+describe('DELETE /api/productos/:id', () => {
+    it('Should check a valid ID', async () => {
+        const response = await request(server).delete('/api/productos/not-valid')
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors[0].msg).toBe('ID no valido')
+
+    })
+    it('Should return a 404 response for a non-existent product', async () => {
+        const productId = 2000
+        const response = await request(server).delete(`/api/productos/${productId}`)
+        expect(response.status).toBe(404)
+        expect(response.body.error).toBe('Producto no encontrado')
+        expect(response.status).not.toBe(200)
+    })
+    it('Should delete a product', async () => {
+        const response = await request(server).delete('/api/productos/1')
+        expect(response.status).toBe(200)
+        expect(response.body.data).toBe('Producto eliminado')
+        
+        expect(response.status).not.toBe(404)
+        expect(response.status).not.toBe(400)
+
+    })
+
 })
