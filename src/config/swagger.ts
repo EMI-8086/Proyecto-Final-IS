@@ -1,4 +1,5 @@
 import swaggerJSDoc from "swagger-jsdoc";
+import { SwaggerUiOptions } from "swagger-ui-express";
 
 
 const options: swaggerJSDoc.Options = {
@@ -21,4 +22,21 @@ const options: swaggerJSDoc.Options = {
 }
 
 const swaggerSpec = swaggerJSDoc(options);
+
+const swaggerUiOptions : SwaggerUiOptions = {
+    customCss : `
+        .topbar-wrapper .link {
+            content: url('https://sg.com.mx/sites/default/files/2018-04/LogoITCelaya.png');
+            width: 60px;
+            height: 150px;
+            width: auto;
+        }
+    `,
+    customSiteTitle: "Documentación API - Productos"
+    
+}
+
 export default swaggerSpec;
+export {
+    swaggerUiOptions
+}
