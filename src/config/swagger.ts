@@ -1,11 +1,12 @@
-import swaggerJSDoc from "swagger-jsdoc";  
+import swaggerJSDoc from "swagger-jsdoc";
+
 
 const options: swaggerJSDoc.Options = {
-    swaggerDefinition: {
+    definition: { 
         openapi: "3.0.2",
         tags: [
             {
-                name: "Productos",
+                name: "Products", 
                 description: "Operaciones relacionadas con los productos"
             }
         ],
@@ -15,7 +16,9 @@ const options: swaggerJSDoc.Options = {
             description: 'API Docs para productos'
         },
     },
-        apis: ['./src/router.ts']
+    apis: [ './src/router.ts']
+        
 }
+
 const swaggerSpec = swaggerJSDoc(options);
 export default swaggerSpec;
