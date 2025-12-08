@@ -1,10 +1,12 @@
 import express from 'express'
 import colors from 'colors'
 import cors, { CorsOptions } from 'cors' 
+import morgan from 'morgan'
 import swaggerUI from 'swagger-ui-express'
 import swaggerSpec, { swaggerUiOptions } from './config/swagger'
 import router from './router'
 import db from './config/db'
+
 
 // Conexión a la BD
 export async function connectDB(){
@@ -34,10 +36,13 @@ const corsOptions: CorsOptions = {
 }
        
 
+
 server.use(cors(corsOptions))
 
 // Leer datos de formularios, recupera la info enviada 
 server.use(express.json())
+
+server.use(morgan('dev'))
 
 //filtra la accion http mediante esta linea, tambien se puede camiar la ruta
 server.use('/api/productos', router)
