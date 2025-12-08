@@ -1,6 +1,6 @@
 import { safeParse } from 'valibot';
 import axios from 'axios';
-import { DraftProductoSchema } from '../types';
+import { DraftProductoSchema, ProductoSchema, ProductsSchema  } from '../types';
 
 
 type ProductData = {
@@ -19,6 +19,23 @@ export async function addProduct(data : ProductData) {
                 name: result.output.name,
                 price: result.output.price
             })
+        } else {
+            throw new Error('Datos no validos');
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
+
+}
+
+export async function getProducts() {
+    try {
+        const url = `${import.meta.env.VITE_API_URL}/api/productos`;
+        const { data } = await axios(url);
+        const result = safeParse(ProductsSchema, data.data);
+        if (result.success) {
+            return result.output;
         } else {
             throw new Error('Datos no validos');
         }
